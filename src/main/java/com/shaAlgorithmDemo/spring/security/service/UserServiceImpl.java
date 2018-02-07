@@ -5,6 +5,7 @@ import com.shaAlgorithmDemo.spring.security.model.User;
 import com.shaAlgorithmDemo.spring.security.repository.UserRepository;
 import com.shaAlgorithmDemo.spring.security.web.dto.UserRegistrationDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +24,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private ShaPasswordEncoder passwordEncoder;
 
     public User findByEmail(String email){
         return userRepository.findByEmail(email);
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(registration.getFirstName());
         user.setLastName(registration.getLastName());
         user.setEmail(registration.getEmail());
-        user.setPassword(passwordEncoder.encode(registration.getPassword()));
+        user.setPassword(passwordEncoder.encodePassword(registration.getPassword(),""));
         user.setRoles(Arrays.asList(new Role("ROLE_USER")));
         return userRepository.save(user);
     }
