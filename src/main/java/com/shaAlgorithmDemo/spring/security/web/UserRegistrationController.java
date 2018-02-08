@@ -35,8 +35,12 @@ public class UserRegistrationController {
                                       BindingResult result){
 
         User existing = userService.findByEmail(userDto.getEmail());
+        User exisitingUsername = userService.findByUsername(userDto.getUsername());
         if (existing != null){
             result.rejectValue("email", null, "There is already an account registered with that email");
+        }
+        if (exisitingUsername != null){
+            result.rejectValue("username", null, "Username already taken");
         }
 
         if (result.hasErrors()){
