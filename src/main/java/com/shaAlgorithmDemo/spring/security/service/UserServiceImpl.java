@@ -6,8 +6,11 @@ import com.shaAlgorithmDemo.spring.security.repository.UserRepository;
 import com.shaAlgorithmDemo.spring.security.web.dto.UserRegistrationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -43,13 +46,17 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    public User save(User user){
+        return userRepository.save(user);
+    }
+
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
         if (user == null){
             throw new UsernameNotFoundException("Invalid username or password.");
         }
-        return new org.springframework.security.core.userdetails.User(user.getEmail(),
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getPassword(),
                 mapRolesToAuthorities(user.getRoles()));
     }
@@ -58,5 +65,19 @@ public class UserServiceImpl implements UserService {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
+    }
+
+    public UserDetails currentUserDetails(){
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        if (authentication != null) {
+            Object principal = authentication.getPrincipal();
+            return principal instanceof UserDetails ? (UserDetails) principal : null;
+        }
+        return null;
+    }
+
+    public String encodeString(String s){
+        return passwordEncoder.encodePassword(s,"");
     }
 }

@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}"/>
 
     <title>Login</title>
+
 </head>
 <body>
 <div class="container">
@@ -38,7 +39,10 @@
     </div>
 
 </div>
-
+<script>
+    var username= document.getElementById("username");
+    localStorage.setItem("username", username.value);
+</script>
 <script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 
