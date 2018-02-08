@@ -30,11 +30,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email);
     }
 
+    public User findByUsername(String username) {return  userRepository.findByUsername(username);}
+
     public User save(UserRegistrationDto registration){
         User user = new User();
         user.setFirstName(registration.getFirstName());
         user.setLastName(registration.getLastName());
         user.setEmail(registration.getEmail());
+        user.setUsername(registration.getUsername());
         user.setPassword(passwordEncoder.encodePassword(registration.getPassword(),""));
         user.setRoles(Arrays.asList(new Role("ROLE_USER")));
         return userRepository.save(user);

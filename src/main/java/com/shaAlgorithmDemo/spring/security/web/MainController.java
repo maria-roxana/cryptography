@@ -21,4 +21,9 @@ public class MainController {
     public String userIndex() {
         return "user/index";
     }
+
+    @GetMapping("/changePassword")
+    public String changePassword() {
+        return "changePassword";
+    }
 }
