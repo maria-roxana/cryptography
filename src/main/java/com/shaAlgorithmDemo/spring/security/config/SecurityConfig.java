@@ -9,7 +9,6 @@ import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -22,37 +21,44 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers(
-                            "/registration**",
-                            "/changePassword**",
-                            "/js/**",
-                            "/css/**",
-                            "/img/**",
-                            "/webjars/**").permitAll()
-                    .anyRequest().authenticated()
+                .antMatchers(
+                        "/registration**",
+                        "/changePassword**",
+                        "/uploadFile**",
+                        "/js/**",
+                        "/css/**",
+                        "/img/**",
+                        "/webjars/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                    .formLogin()
-                        .loginPage("/login")
-                            .permitAll()
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
                 .and()
-                    .logout()
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/login?logout")
+                .logout()
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login?logout")
                 .permitAll();
+
+        http.csrf().disable();
     }
 
     @Bean
-    public ShaPasswordEncoder passwordEncoder(){
+    public ShaPasswordEncoder passwordEncoder() {
         return new ShaPasswordEncoder(256);
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider(){
+    public DaoAuthenticationProvider authenticationProvider() {
+//        ReflectionSaltSource saltSource = new ReflectionSaltSource();
+//        saltSource.setUserPropertyToUse("salt");
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
         auth.setUserDetailsService(userService);
         auth.setPasswordEncoder(passwordEncoder());
+//        auth.setSaltSource(saltSource);
+
         return auth;
     }
 

@@ -16,6 +16,7 @@ public class User {
     private String email;
     private String password;
     private String username;
+    private String salt;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
@@ -99,6 +100,14 @@ public class User {
 
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     @Override
