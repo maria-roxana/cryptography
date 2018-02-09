@@ -26,4 +26,9 @@ public class MainController {
     public String changePassword() {
         return "changePassword";
     }
+
+    @GetMapping("/uploadFile")
+    public String uploadFile() {
+        return "uploadFile";
+    }
 }
